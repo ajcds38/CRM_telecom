@@ -1,0 +1,295 @@
+/* —— Reset leve e base global —— */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #1a1a1a;
+  background-color: #fff;
+  min-height: 100vh;
+}
+
+img, picture, video, canvas, svg { display: block; max-width: 100%; }
+input, button, textarea, select { font: inherit; }
+
+/* —— Variáveis de cor —— */
+:root {
+  --brand-50:  #eef6ff;
+  --brand-100: #d5eaff;
+  --brand-200: #b9ddff;
+  --brand-300: #9ecfff;
+  --brand-400: #83c1ff;
+  --brand-500: #69b3ff;
+  --brand-600: #4a93e6;
+  --brand-700: #2673cc; /* cor principal forte */
+  --brand-800: #1d568f;
+  --brand-900: #143c5e;
+
+  --alert-red: #ff4d4f;
+
+  --table-header-bg: #2673cc;
+  --table-header-color: #ffffff;
+
+  --table-total-bg: #eef6ff;
+  --table-media-bg: #f7fff2;
+
+  --text-muted: #666666;
+}
+
+/* —— Estilos gerais —— */
+a { color: var(--brand-700); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+button { cursor: pointer; border: none; background: none; padding: 0; }
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.page-title { margin-bottom: 24px; }
+.page-title h1 { font-size: 1.75rem; color: #1a1a1a; }
+
+/* —— Filtros form —— */
+.filters {
+  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.filters label {
+  display: block;
+  font-size: 0.875rem;
+  margin-bottom: 4px;
+  color: var(--text-muted);
+}
+
+.filters input[type="date"],
+.filters select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #c4c4c4;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.filters .actions {
+  grid-column: 1/-1;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.filters .actions button {
+  background-color: var(--brand-700);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.filters .actions .helper {
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* —— Tabela de resultados —— */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+
+.table th,
+.table td {
+  padding: 8px 12px;
+  text-align: center; /* 🔹 Centraliza todas as células e cabeçalhos */
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 0.875rem;
+  vertical-align: middle; /* 🔹 Centraliza verticalmente também */
+}
+
+.table thead th {
+  background-color: var(--table-header-bg);
+  color: var(--table-header-color);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* Cabeçalho em 2 linhas: grupo (produto) + subcabeçalhos */
+.th-group {
+  background: #1f5fb3;
+  color: #fff;
+  text-align: center;
+  border-left: 2px solid rgba(255,255,255,.35);
+  font-weight: 700;
+}
+.th-sub {
+  background: #2a6fd0;
+  color: #fff;
+  text-align: center;
+  font-weight: 600;
+  border-left: 2px solid rgba(255,255,255,.25);
+}
+
+/* Divisória vertical no início de cada grupo (Receita/Qtd) */
+.gstart {
+  border-left: 2px solid #d7e6ff !important;
+}
+
+/* Diferenciar visualmente receita x quantidade */
+.money { font-variant-numeric: tabular-nums; }
+.qty { color: #374151; }
+
+/* Linhas de destaque */
+.row-total  { background-color: var(--table-total-bg); }
+.row-media  { background-color: var(--table-media-bg); }
+
+.row-total td strong,
+.row-media td strong {
+  font-weight: 700;
+  color: var(--brand-700);
+}
+
+.cell-metric { position: relative; }
+
+/* Alerta (abaixo da média) */
+.alert-blink {
+  display: inline-block;
+  margin-left: 6px;
+  width: 18px;
+  height: 18px;
+  background-color: var(--alert-red);
+  color: #fff;
+  font-size: 14px;
+  line-height: 18px;
+  text-align: center;
+  border-radius: 50%;
+  animation: blink 1.2s infinite alternate;
+}
+
+@keyframes blink { from { opacity: 1; } to { opacity: 0.3; } }
+
+/* —— Botão pequeno de expand/colapsar —— */
+.btn-small {
+  background: var(--brand-700);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+.btn-small:hover { filter: brightness(0.95); }
+
+/* —— Utilitários —— */
+.hidden-row { display: none; }
+.text-muted { color: var(--text-muted); }
+
+/* —— Responsividade mínima —— */
+@media (max-width: 768px) {
+  .filters { grid-template-columns: 1fr; }
+  .table th, .table td { font-size: 0.8rem; padding: 6px 10px; }
+}
+
+/* ===== Sidebar à direita ===== */
+.topbar{
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px; padding: 0 16px;
+  background: #ffffff; border-bottom: 1px solid #e5e7eb;
+}
+.topbar__brand{ font-weight: 700; color:#1a1a1a; }
+.side-toggle{
+  display: none; /* só no mobile */
+  font-size: 20px; padding: 6px 10px; border-radius: 8px;
+  background: var(--brand-700); color:#fff;
+}
+
+.page-wrap{
+  position: relative;
+  display: block;
+}
+
+/* Largura do menu e recuo do conteúdo em desktop */
+.with-sidebar .content{
+  max-width: 1160px; /* opcional: limite central */
+  padding: 16px;
+  margin: 0 auto;
+  margin-right: 300px;              /* cria espaço para o menu fixo à direita */
+}
+
+.side-menu{
+  position: fixed; right: 0; top: 56px; /* abaixo da topbar */
+  width: 280px; height: calc(100vh - 56px);
+  border-left: 1px solid #e5e7eb;
+  background: #fff;
+  display: flex; flex-direction: column;
+  z-index: 40;
+}
+
+.side-menu__header{
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px; border-bottom: 1px solid #e5e7eb; font-weight: 700;
+}
+.side-close{
+  display: none;       /* só no mobile */
+  background: none; font-size: 18px; line-height: 1;
+}
+
+.side-nav{
+  padding: 8px;
+  overflow-y: auto;
+  flex: 1;
+}
+.side-link{
+  display: block; padding: 10px 12px; border-radius: 8px;
+  color: #111827; text-decoration: none; font-weight: 600;
+  margin-bottom: 6px;
+  background: #f9fafb;
+}
+.side-link:hover{ background: #eef6ff; color: var(--brand-700); }
+.side-link.is-active{
+  background: var(--brand-700); color:#fff;
+}
+
+.side-menu__footer{
+  padding: 10px 12px; border-top: 1px solid #e5e7eb; color:#6b7280;
+}
+
+/* ===== Responsivo: no mobile o menu vira sobreposição ===== */
+@media (max-width: 1024px){
+  .side-toggle{ display: inline-flex; }
+  .with-sidebar .content{ margin-right: 0; }
+
+  .side-menu{
+    top: 56px; height: calc(100vh - 56px);
+    transform: translateX(100%);
+    transition: transform .25s ease;
+    box-shadow: -8px 0 24px rgba(0,0,0,0.08);
+  }
+  body.sidebar-open .side-menu{ transform: translateX(0%); }
+  .side-close{ display: inline-flex; }
+}
+

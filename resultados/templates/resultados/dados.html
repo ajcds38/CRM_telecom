@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load dict_extras %}
+
+{% block title %}Resultados — CRM Telecom{% endblock %}
+
+{% block content %}
+  <div class="page-title"><h1>📊 Resultados — Geral por Loja</h1></div>
+
+  {% if erro %}<div class="error">Erro: {{ erro }}</div>{% endif %}
+
+  <form method="get" class="card filters">
+    {% if has_date %}
+      <div><label>Data inicial</label><input type="date" name="data_inicio" value="{{ data_inicio }}"></div>
+      <div><label>Data final</label><input type="date" name="data_fim" value="{{ data_fim }}"></div>
+    {% endif %}
+    <div>
+      <label>Loja</label>
+      <select name="loja"><option value="">Todas</option>
+        {% for o in loja_opts %}<option value="{{ o }}" {% if f_loja == o %}selected{% endif %}>{{ o }}</option>{% endfor %}
+      </select>
+    </div>
+    <div>
+      <label>Gestor</label>
+      <select name="gestor"><option value="">Todos</option>
+        {% for o in gestor_opts %}<option value="{{ o }}" {% if f_gestor == o %}selected{% endif %}>{{ o }}</option>{% endfor %}
+      </select>
+    </div>
+    <div>
+      <label>Coordenação</label>
+      <select name="coordenacao"><option value="">Todas</option>
+        {% for o in coord_opts %}<option value="{{ o }}" {% if f_coordenacao == o %}selected{% endif %}>{{ o }}</option>{% endfor %}
+      </select>
+    </div>
+    <div>
+      <label>Vendedor</label>
+      <select name="vendedor"><option value="">Todos</option>
+        {% for o in vend_opts %}<option value="{{ o }}" {% if f_vendedor == o %}selected{% endif %}>{{ o }}</option>{% endfor %}
+      </select>
+    </div>
+    <div>
+      <label>Produto</label>
+      <select name="produto"><option value="">Todos</option>
+        {% for o in prod_opts %}<option value="{{ o }}" {% if f_produto == o %}selected{% endif %}>{{ o }}</option>{% endfor %}
+      </select>
+    </div>
+    <div>
+      <label>Status ativação</label>
+      <select name="status_ativacao"><option value="">Todos</option>
+        {% for o in status_opts %}<option value="{{ o }}" {% if f_status == o %}selected{% endif %}>{{ o }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="actions">
+      <button type="submit">Aplicar filtros</button>
+      <div class="helper">As opções de filtros são carregadas apenas pelo recorte de data.</div>
+    </div>
+  </form>
+
+  {% if lojas and produtos %}
+    {% for bloco in lojas %}
+      <div class="card" style="margin-bottom:16px">
+        <div style="display:flex;align-items:center;margin-bottom:8px">
+          <h3 style="margin:0;flex:1">{{ bloco.loja }}</h3>
+          <button type="button" class="btn-small" title="Expandir/Fechar vendedores"
+                  onclick="toggleLoja('{{ forloop.counter0 }}')">▼</button>
+        </div>
+
+        <div style="overflow:auto">
+          <table class="table">
+            <thead>
+              <tr>
+                <!-- célula vazia no canto esquerdo do cabeçalho -->
+                <th rowspan="2" style="min-width:200px"></th>
+                {% for p in produtos %}
+                  <th class="th-group" colspan="2">{{ p }}</th>
+                {% endfor %}
+              </tr>
+              <tr>
+                {% for p in produtos %}
+                  <th class="th-sub">Receita</th>
+                  <th class="th-sub">Qtd</th>
+                {% endfor %}
+              </tr>
+            </thead>
+
+            <tbody>
+              <!-- TOTAL DA LOJA (destacado) -->
+              <tr class="row-total">
+                <td><strong>Total da Loja</strong></td>
+                {% for p in produtos %}
+                  {% with tot=bloco.totais|get_item:p %}
+                    <td class="cell-metric gstart money"><strong>R$ {{ tot|get_item:'receita'|default0|floatformat:2 }}</strong></td>
+                    <td class="cell-metric qty"><strong>{{ tot|get_item:'qtd'|default0|floatformat:0 }}</strong></td>
+                  {% endwith %}
+                {% endfor %}
+              </tr>
+
+              <!-- VENDEDORES (expand/collapse) -->
+              {% for v in bloco.vendedores %}
+                <tr class="loja-{{ forloop.parentloop.counter0 }} hidden-row">
+                  <td>{{ v.vendedor }}</td>
+                  {% for p in produtos %}
+                    {% with m=v.metrics|get_item:p a=v.alerts|get_item:p %}
+                      <td class="cell-metric gstart money">
+                        R$ {{ m|get_item:'receita'|default0|floatformat:2 }}
+                        {% if a|get_item:'receita' %}<button class="alert-blink" title="Abaixo da média da loja">!</button>{% endif %}
+                      </td>
+                      <td class="cell-metric qty">
+                        {{ m|get_item:'qtd'|default0|floatformat:0 }}
+                        {% if a|get_item:'qtd' %}<button class="alert-blink" title="Abaixo da média da loja">!</button>{% endif %}
+                      </td>
+                    {% endwith %}
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+
+              <!-- MÉDIA DA LOJA (destacado) -->
+              <tr class="row-media">
+                <td><strong>Média da Loja (por vendedor)</strong></td>
+                {% for p in produtos %}
+                  {% with med=bloco.medias|get_item:p %}
+                    <td class="cell-metric gstart money"><strong>R$ {{ med|get_item:'receita'|default0|floatformat:2 }}</strong></td>
+                    <td class="cell-metric qty"><strong>{{ med|get_item:'qtd'|default0|floatformat:2 }}</strong></td>
+                  {% endwith %}
+                {% endfor %}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>Nenhum dado encontrado para os filtros informados.</p>
+  {% endif %}
+
+  <script>
+    function toggleLoja(idx){
+      document.querySelectorAll('.loja-'+idx).forEach(r => r.classList.toggle('hidden-row'));
+    }
+  </script>
+{% endblock %}

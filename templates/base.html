@@ -1,0 +1,83 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}CRM Telecom{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="with-sidebar">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="topbar__brand">📈 CRM Telecom</div>
+    <button class="side-toggle" onclick="toggleSidebar()" aria-label="Abrir/fechar menu">☰</button>
+  </header>
+
+  <!-- Conteúdo + Sidebar -->
+  <div class="page-wrap">
+    <main class="content">
+      {% block content %}{% endblock %}
+    </main>
+
+    <!-- MENU LATERAL DIREITO -->
+    <aside id="sideMenu" class="side-menu">
+      <div class="side-menu__header">
+        <span>Menu</span>
+        <button class="side-close" onclick="toggleSidebar()" aria-label="Fechar">✕</button>
+      </div>
+
+      <nav class="side-nav">
+        <!-- Link ativo de Resultados (garanta name='resultados_dados' nas urls) -->
+        <a
+          class="side-link {% if request.resolver_match and request.resolver_match.url_name == 'resultados_dados' %}is-active{% endif %}"
+          href="{% url 'resultados_dados' %}"
+        >
+          Resultados
+        </a>
+
+        {% comment %}
+        Quando criar as próximas views/urls, descomente e ajuste:
+        <a
+          class="side-link {% if request.resolver_match and request.resolver_match.url_name == 'painel_vendedores' %}is-active{% endif %}"
+          href="{% url 'painel_vendedores' %}"
+        >
+          Painel de Vendedores
+        </a>
+
+        <a
+          class="side-link {% if request.resolver_match and request.resolver_match.url_name == 'relatorios' %}is-active{% endif %}"
+          href="{% url 'relatorios' %}"
+        >
+          Relatórios
+        </a>
+        {% endcomment %}
+      </nav>
+
+      <div class="side-menu__footer">
+        <small>v0.1 • {{ request.user|default_if_none:"" }}</small>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    // Abre/fecha o sidebar (mobile)
+    function toggleSidebar(){
+      document.body.classList.toggle('sidebar-open');
+    }
+
+    // Fecha ao clicar fora no mobile
+    document.addEventListener('click', function(e){
+      const menu = document.getElementById('sideMenu');
+      const toggle = document.querySelector('.side-toggle');
+      const closeBtn = document.querySelector('.side-close');
+      if (!menu.contains(e.target) && !toggle.contains(e.target) && !closeBtn.contains(e.target)){
+        document.body.classList.remove('sidebar-open');
+      }
+    });
+  </script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
